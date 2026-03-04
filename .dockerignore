@@ -1,0 +1,14 @@
+**/.DS_Store
+**/.git
+**/.gitignore
+**/node_modules
+**/dist
+bin
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/ownership.db
+data/ownership.db-wal
+data/ownership.db-shm
+**/*.log
+**/.env

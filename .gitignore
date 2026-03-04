@@ -1,0 +1,15 @@
+.DS_Store
+.env
+.env.*
+.claude/
+bin/
+client/dist/
+client/node_modules/
+node_modules/
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/ownership.db
+data/ownership.db-wal
+data/ownership.db-shm
+*.log
