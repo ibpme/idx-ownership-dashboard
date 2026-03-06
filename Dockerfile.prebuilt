@@ -17,14 +17,14 @@ WORKDIR /app
 COPY server/go.mod server/go.sum ./server/
 RUN cd server && go mod download
 COPY server/ ./server/
-RUN cd server && CGO_ENABLED=1 GOOS=linux go build -o /app/server .
+RUN cd server && CGO_ENABLED=1 GOOS=linux go build -o /app/bin/server .
 
 FROM debian:bookworm-slim AS runtime
 WORKDIR /app
 RUN apt-get update \
   && apt-get install -y --no-install-recommends ca-certificates \
   && rm -rf /var/lib/apt/lists/*
-COPY --from=server-builder /app/server /app/server
+COPY --from=server-builder /app/bin/server /app/server
 COPY --from=client-builder /app/client/dist /app/client/dist
 # Create the data directory; mount your pre-built db here at runtime.
 RUN mkdir -p /app/data
