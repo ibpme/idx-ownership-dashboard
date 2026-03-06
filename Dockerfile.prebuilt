@@ -1,0 +1,33 @@
+# syntax=docker/dockerfile:1.7
+# Use this Dockerfile when you have a pre-built ownership.db.
+# Mount or COPY the db at /app/data/ownership.db, or bind-mount a volume.
+#
+# Example run with volume:
+#   docker run -v /path/to/data:/app/data -p 8080:8080 idx-ownership-prebuilt
+
+FROM node:20-bookworm-slim AS client-builder
+WORKDIR /app/client
+COPY client/package.json client/yarn.lock ./
+RUN corepack enable && yarn install --frozen-lockfile
+COPY client/ ./
+RUN yarn build
+
+FROM golang:1.25.5-bookworm AS server-builder
+WORKDIR /app
+COPY server/go.mod server/go.sum ./server/
+RUN cd server && go mod download
+COPY server/ ./server/
+RUN cd server && CGO_ENABLED=1 GOOS=linux go build -o /app/server .
+
+FROM debian:bookworm-slim AS runtime
+WORKDIR /app
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+COPY --from=server-builder /app/server /app/server
+COPY --from=client-builder /app/client/dist /app/client/dist
+# Create the data directory; mount your pre-built db here at runtime.
+RUN mkdir -p /app/data
+VOLUME ["/app/data"]
+EXPOSE 8080
+CMD ["/app/server", "-addr", ":8080", "-db", "/app/data/ownership.db", "-client", "/app/client/dist"]

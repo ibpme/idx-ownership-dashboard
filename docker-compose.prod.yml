@@ -1,7 +1,15 @@
 version: "3.9"
 services:
   app:
-    build: .
+    # Option A: full build (includes PDF extraction — slow on first build)
+    # build: .
+
+    # Option B: prebuilt db — mount ownership.db via volume (fast, recommended for prod)
+    build:
+      context: .
+      dockerfile: Dockerfile.prebuilt
+    volumes:
+      - ./data:/app/data
     expose:
       - "8080"
   caddy:
