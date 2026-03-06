@@ -1,6 +1,16 @@
-version: "3.9"
 services:
-  app:
-    build: .
-    ports:
-      - "8080:8080"
+  idx-dashboard: 
+    container_name: idx-dashboard
+    image: idx-dashboard:latest
+    build:
+      context: .
+      dockerfile: Dockerfile.prebuilt
+    volumes:
+      - ./data:/app/data
+    restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
