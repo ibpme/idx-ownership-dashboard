@@ -612,8 +612,15 @@ td.investor-link a {
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
-  font-size: 13px;
+  display: flex;
+  align-items: center;
   pointer-events: none;
+}
+
+.network-search .search-icon svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .network-search button {
@@ -770,8 +777,15 @@ td.investor-link a {
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-muted);
-  font-size: 15px;
+  display: flex;
+  align-items: center;
   pointer-events: none;
+}
+
+.home-search .search-icon svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 /* Back link */
