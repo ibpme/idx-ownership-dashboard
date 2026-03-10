@@ -112,3 +112,25 @@ export interface NetworkGraph {
   nodes: GraphNode[];
   links: GraphLink[];
 }
+
+export interface BoardMember {
+  name: string;
+  title: string;
+}
+
+export interface CompanyProfile {
+  share_code: string;
+  name: string;
+  sector: string;
+  sub_sector: string;
+  industry: string;
+  address: string;
+  website: string;
+  email: string;
+  phone: string;
+  listing_date: string;
+  listing_board: string;
+  directors: BoardMember[];
+  commissioners: BoardMember[];
+  audit_committee: BoardMember[];
+}

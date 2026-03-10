@@ -817,6 +817,113 @@ td.investor-link a {
   background: #fff5ef;
 }
 
+/* Company Profile */
+.company-profile {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+
+.company-profile-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  padding: 14px 20px;
+  cursor: pointer;
+  user-select: none;
+  list-style: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.company-profile-title::before {
+  content: '▶';
+  font-size: 9px;
+  color: var(--text-muted);
+  transition: transform 0.15s;
+}
+
+details.company-profile[open] .company-profile-title::before {
+  transform: rotate(90deg);
+}
+
+.company-profile-title::-webkit-details-marker {
+  display: none;
+}
+
+.company-profile-body {
+  padding: 0 20px 20px;
+  border-top: 1px solid var(--border-light);
+}
+
+.company-profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+  padding-top: 16px;
+  margin-bottom: 12px;
+}
+
+.company-profile-field label,
+.company-profile-address label {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 2px;
+}
+
+.company-profile-field span,
+.company-profile-address span {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.company-profile-address {
+  margin-bottom: 12px;
+}
+
+.company-profile-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 20px;
+  border-top: 1px solid var(--border-light);
+  padding-top: 16px;
+  margin-top: 4px;
+}
+
+.company-profile-board-section h4 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 10px;
+}
+
+.board-member {
+  margin-bottom: 10px;
+}
+
+.board-member-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.board-member-title {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 1px;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
   .header {

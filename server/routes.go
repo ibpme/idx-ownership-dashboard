@@ -39,6 +39,7 @@ func setupRoutes(mux *http.ServeMux, clientDir string) {
 	mux.HandleFunc("GET /api/conglomerates", handleConglomerates)
 	mux.HandleFunc("GET /api/conglomerates/{id}", handleConglomerateDetail)
 	mux.HandleFunc("GET /api/network", handleNetwork)
+	mux.HandleFunc("GET /api/company-profile/{code}", handleCompanyProfile)
 
 	if clientDir != "" {
 		fs := http.FileServer(http.Dir(clientDir))

@@ -105,6 +105,20 @@ func handleConglomerateDetail(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, detail)
 }
 
+func handleCompanyProfile(w http.ResponseWriter, r *http.Request) {
+	code := r.PathValue("code")
+	profile, err := queryCompanyProfile(code)
+	if err != nil {
+		writeError(w, 500, "query failed")
+		return
+	}
+	if profile == nil {
+		writeError(w, 404, "company profile not found")
+		return
+	}
+	writeJSON(w, profile)
+}
+
 func handleNetwork(w http.ResponseWriter, r *http.Request) {
 	ticker := r.URL.Query().Get("ticker")
 	investor := r.URL.Query().Get("investor")
