@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
@@ -520,4 +521,35 @@ func queryNetwork(ticker, investor string, depth int) NetworkGraph {
 		graph.Links = []GraphLink{}
 	}
 	return graph
+}
+
+func queryCompanyProfile(code string) (*CompanyProfile, error) {
+	var p CompanyProfile
+	var directors, commissioners, auditCommittee string
+	err := db.QueryRow(`
+		SELECT share_code, name, sector, sub_sector, industry, address, website,
+		       email, phone, listing_date, listing_board, directors, commissioners, audit_committee
+		FROM company_profiles WHERE share_code = ?`, code).
+		Scan(&p.ShareCode, &p.Name, &p.Sector, &p.SubSector, &p.Industry,
+			&p.Address, &p.Website, &p.Email, &p.Phone, &p.ListingDate, &p.ListingBoard,
+			&directors, &commissioners, &auditCommittee)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	json.Unmarshal([]byte(directors), &p.Directors)
+	json.Unmarshal([]byte(commissioners), &p.Commissioners)
+	json.Unmarshal([]byte(auditCommittee), &p.AuditCommittee)
+	if p.Directors == nil {
+		p.Directors = []BoardMember{}
+	}
+	if p.Commissioners == nil {
+		p.Commissioners = []BoardMember{}
+	}
+	if p.AuditCommittee == nil {
+		p.AuditCommittee = []BoardMember{}
+	}
+	return &p, nil
 }

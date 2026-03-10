@@ -8,6 +8,7 @@ import type {
   ConglomerateSummary,
   ConglomerateDetail,
   NetworkGraph,
+  CompanyProfile,
 } from './types';
 
 const BASE = '/api';
@@ -30,6 +31,8 @@ export const api = {
   conglomerates: () => get<ConglomerateSummary[]>('/conglomerates'),
   conglomerateDetail: (id: string) =>
     get<ConglomerateDetail>(`/conglomerates/${id}`),
+  companyProfile: (code: string) =>
+    get<CompanyProfile>(`/company-profile/${encodeURIComponent(code)}`),
   network: (params: { ticker?: string; investor?: string; depth?: number }) => {
     const sp = new URLSearchParams();
     if (params.ticker) sp.set('ticker', params.ticker);

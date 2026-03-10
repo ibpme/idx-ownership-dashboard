@@ -1,14 +1,15 @@
 import { api } from '../api';
 import { formatShares, formatNumber, investorTypeLabel, lfLabel } from '../utils';
 import { renderTable, type Column } from './table';
-import type { Shareholder } from '../types';
+import type { Shareholder, CompanyProfile, BoardMember } from '../types';
 
 export async function renderTickerDetail(container: HTMLElement, code: string) {
   container.innerHTML = '<div class="loading">Loading</div>';
   try {
-    const [detail, lf] = await Promise.all([
+    const [detail, lf, profile] = await Promise.all([
       api.tickerDetail(code),
       api.tickerLF(code),
+      api.companyProfile(code).catch(() => null),
     ]);
 
     container.innerHTML = '';
@@ -111,8 +112,92 @@ export async function renderTickerDetail(container: HTMLElement, code: string) {
       },
     ];
 
+    if (profile) {
+      container.appendChild(renderCompanyProfile(profile));
+    }
+
     renderTable(container, columns, detail.shareholders);
   } catch {
     container.innerHTML = '<div class="error-message">Failed to load ticker details</div>';
   }
+}
+
+function renderCompanyProfile(p: CompanyProfile): HTMLElement {
+  const section = document.createElement('details');
+  section.className = 'company-profile';
+  section.open = false;
+
+  const summary = document.createElement('summary');
+  summary.className = 'company-profile-title';
+  summary.textContent = 'Company Profile';
+  section.appendChild(summary);
+
+  const body = document.createElement('div');
+  body.className = 'company-profile-body';
+
+  // Info grid
+  const infoFields: { label: string; value: string }[] = [];
+  if (p.sector) infoFields.push({ label: 'Sector', value: p.sector });
+  if (p.sub_sector) infoFields.push({ label: 'Sub-Sector', value: p.sub_sector });
+  if (p.industry) infoFields.push({ label: 'Industry', value: p.industry });
+  if (p.listing_date) infoFields.push({ label: 'Listed', value: p.listing_date });
+  if (p.listing_board) infoFields.push({ label: 'Board', value: p.listing_board });
+  if (p.phone) infoFields.push({ label: 'Phone', value: p.phone });
+  if (p.email) infoFields.push({ label: 'Email', value: p.email });
+
+  if (infoFields.length > 0) {
+    const grid = document.createElement('div');
+    grid.className = 'company-profile-grid';
+    grid.innerHTML = infoFields
+      .map(
+        (f) =>
+          `<div class="company-profile-field"><label>${f.label}</label><span>${f.value}</span></div>`,
+      )
+      .join('');
+    body.appendChild(grid);
+  }
+
+  if (p.address) {
+    const addr = document.createElement('div');
+    addr.className = 'company-profile-address';
+    addr.innerHTML = `<label>Address</label><span>${p.address}</span>`;
+    body.appendChild(addr);
+  }
+
+  if (p.website) {
+    const web = document.createElement('div');
+    web.className = 'company-profile-address';
+    const href = p.website.startsWith('http') ? p.website : `https://${p.website}`;
+    web.innerHTML = `<label>Website</label><span><a href="${href}" target="_blank" rel="noopener">${p.website}</a></span>`;
+    body.appendChild(web);
+  }
+
+  // Board members
+  const groups: { title: string; members: BoardMember[] }[] = [
+    { title: 'Board of Directors', members: p.directors },
+    { title: 'Board of Commissioners', members: p.commissioners },
+    { title: 'Audit Committee', members: p.audit_committee },
+  ];
+  const nonEmpty = groups.filter((g) => g.members.length > 0);
+  if (nonEmpty.length > 0) {
+    const boardEl = document.createElement('div');
+    boardEl.className = 'company-profile-board';
+    nonEmpty.forEach((g) => {
+      const col = document.createElement('div');
+      col.className = 'company-profile-board-section';
+      col.innerHTML =
+        `<h4>${g.title}</h4>` +
+        g.members
+          .map(
+            (m) =>
+              `<div class="board-member"><div class="board-member-name">${m.name}</div><div class="board-member-title">${m.title}</div></div>`,
+          )
+          .join('');
+      boardEl.appendChild(col);
+    });
+    body.appendChild(boardEl);
+  }
+
+  section.appendChild(body);
+  return section;
 }

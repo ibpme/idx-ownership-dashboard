@@ -114,3 +114,25 @@ type NetworkGraph struct {
 	Nodes []GraphNode `json:"nodes"`
 	Links []GraphLink `json:"links"`
 }
+
+type BoardMember struct {
+	Name  string `json:"name"`
+	Title string `json:"title"`
+}
+
+type CompanyProfile struct {
+	ShareCode      string        `json:"share_code"`
+	Name           string        `json:"name"`
+	Sector         string        `json:"sector"`
+	SubSector      string        `json:"sub_sector"`
+	Industry       string        `json:"industry"`
+	Address        string        `json:"address"`
+	Website        string        `json:"website"`
+	Email          string        `json:"email"`
+	Phone          string        `json:"phone"`
+	ListingDate    string        `json:"listing_date"`
+	ListingBoard   string        `json:"listing_board"`
+	Directors      []BoardMember `json:"directors"`
+	Commissioners  []BoardMember `json:"commissioners"`
+	AuditCommittee []BoardMember `json:"audit_committee"`
+}
